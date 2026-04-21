@@ -1,9 +1,45 @@
-const API_URL = 'http://localhost:3000/api';
+// Usar API_URL de data attribute o variable global (puede venir de environment)
+const API_URL = window.API_URL || document.documentElement.dataset.apiUrl || 'http://localhost:3000/api';
+const VACCINE_COST = window.VACCINE_COST || parseFloat(localStorage.getItem('VACCINE_COST') || '500.00');
 
 let currentSession = {
     rol: null,
     vetId: null
 };
+
+// Cargar lista de veterinarios al iniciar
+async function cargarVeterinarios() {
+    try {
+        const response = await fetch(`${API_URL}/veterinarios`);
+        if (!response.ok) {
+            console.error('Error al cargar veterinarios');
+            return;
+        }
+        const veterinarios = await response.json();
+        const select = document.getElementById('roleSelect');
+        
+        // Limpiar opciones previas de veterinarios
+        const existingVetOptions = Array.from(select.options).filter(opt => opt.value.startsWith('rol_veterinario'));
+        existingVetOptions.forEach(opt => opt.remove());
+        
+        // Agregar veterinarios dinámicamente
+        veterinarios.forEach(vet => {
+            const option = document.createElement('option');
+            option.value = `rol_veterinario,${vet.id}`;
+            option.textContent = `Veterinario (${vet.nombre}, id=${vet.id})`;
+            select.appendChild(option);
+        });
+    } catch (err) {
+        console.error('Error al cargar veterinarios:', err);
+    }
+}
+
+// Cargar veterinarios cuando el DOM esté listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', cargarVeterinarios);
+} else {
+    cargarVeterinarios();
+}
 
 async function login() {
     const val = document.getElementById('roleSelect').value;
@@ -125,7 +161,7 @@ async function aplicarVacuna() {
             body: JSON.stringify({
                 mascota_id: parseInt(mascota_id, 10),
                 vacuna_id: parseInt(vacuna_id, 10),
-                costo_cobrado: 500.00
+                costo_cobrado: VACCINE_COST
             })
         });
 

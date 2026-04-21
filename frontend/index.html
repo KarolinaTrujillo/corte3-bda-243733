@@ -15,6 +15,11 @@
         .cache-hit { background-color: #d4edda; color: #155724; }
         .cache-miss { background-color: #f8d7da; color: #721c24; }
     </style>
+    <script>
+        // Configuración de la API desde variables globales o por defecto
+        // Puede ser sobrescrito por variables de entorno en Docker/variables globales
+        window.API_URL = window.API_URL || 'http://localhost:3000/api';
+    </script>
 </head>
 <body>
     <h1>Clínica Veterinaria - Evaluación Corte 3</h1>
@@ -25,8 +30,7 @@
     <section id="pantalla-login">
         <h2>Selección de Rol</h2>
         <select id="roleSelect">
-            <option value="rol_veterinario,1">Veterinario (Dr. López, id=1)</option>
-            <option value="rol_veterinario,2">Veterinario (Dra. García, id=2)</option>
+            <!-- Veterinarios se cargan dinámicamente desde el backend -->
             <option value="rol_recepcion,null">Recepción</option>
             <option value="rol_administrador,null">Administrador</option>
         </select>

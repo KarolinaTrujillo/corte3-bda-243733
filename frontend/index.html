@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clínica Veterinaria</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        section { margin-bottom: 30px; padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .hidden { display: none; }
+        .cache-badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; margin-left: 10px; }
+        .cache-hit { background-color: #d4edda; color: #155724; }
+        .cache-miss { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>Clínica Veterinaria - Evaluación Corte 3</h1>
+
+    <div id="userInfo" style="margin-bottom: 20px; font-weight: bold;"></div>
+
+    <!-- Pantalla 1: Login -->
+    <section id="pantalla-login">
+        <h2>Selección de Rol</h2>
+        <select id="roleSelect">
+            <option value="rol_veterinario,1">Veterinario (Dr. López, id=1)</option>
+            <option value="rol_veterinario,2">Veterinario (Dra. García, id=2)</option>
+            <option value="rol_recepcion,null">Recepción</option>
+            <option value="rol_administrador,null">Administrador</option>
+        </select>
+        <button onclick="login()">Entrar</button>
+    </section>
+
+    <div id="main-app" class="hidden">
+        <button onclick="logout()">Cambiar Rol</button>
+
+        <!-- Pantalla 2: Búsqueda de Mascotas -->
+        <section id="pantalla-mascotas">
+            <h2>Búsqueda de Mascotas</h2>
+            <input type="text" id="searchInput" placeholder="Nombre de la mascota">
+            <button onclick="buscarMascotas()">Buscar</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Especie</th>
+                    </tr>
+                </thead>
+                <tbody id="mascotasTbody"></tbody>
+            </table>
+        </section>
+
+        <!-- Pantalla 3: Vacunación Pendiente -->
+        <section id="pantalla-vacunas">
+            <h2>Vacunación Pendiente</h2>
+            <button onclick="consultarVacunacion()">Consultar</button>
+            <span id="cacheIndicator" class="cache-badge hidden"></span>
+            
+            <div style="margin-top: 10px; margin-bottom: 10px; padding: 10px; border: 1px dashed #999;">
+                <strong>Simular aplicar vacuna:</strong>
+                <input type="number" id="vacMascotaId" placeholder="ID Mascota" style="width: 80px;">
+                <input type="number" id="vacVacunaId" placeholder="ID Vacuna" style="width: 80px;">
+                <button onclick="aplicarVacuna()">Aplicar y limpiar caché</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mascota</th>
+                        <th>Dueño</th>
+                        <th>Última Vacuna</th>
+                        <th>Prioridad</th>
+                    </tr>
+                </thead>
+                <tbody id="vacunasTbody"></tbody>
+            </table>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

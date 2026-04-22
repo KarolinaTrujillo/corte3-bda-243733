@@ -1,0 +1,62 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ${DB_NAME:-clinica_vet}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - ./schema_corte3.sql:/docker-entrypoint-initdb.d/01_schema.sql
+      - ./backend/01_procedures.sql:/docker-entrypoint-initdb.d/02_procedures.sql
+      - ./backend/02_triggers.sql:/docker-entrypoint-initdb.d/03_triggers.sql
+      - ./backend/03_views.sql:/docker-entrypoint-initdb.d/04_views.sql
+      - ./backend/04_roles_y_permisos.sql:/docker-entrypoint-initdb.d/05_roles.sql
+      - ./backend/05_rls.sql:/docker-entrypoint-initdb.d/06_rls.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: ./api
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      HOST: ${HOST:-0.0.0.0}
+      PORT: ${PORT:-3000}
+      DB_HOST: ${DB_HOST:-postgres}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_NAME: ${DB_NAME:-clinica_vet}
+      DB_PORT: ${DB_PORT:-5432}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      CACHE_TTL: ${CACHE_TTL:-300}
+      DEFAULT_ROLE: ${DEFAULT_ROLE:-rol_recepcion}
+      VALID_ROLES: ${VALID_ROLES:-rol_veterinario,rol_recepcion,rol_administrador}
+      VACCINE_COST: ${VACCINE_COST:-500.00}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    image: nginx:alpine
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html

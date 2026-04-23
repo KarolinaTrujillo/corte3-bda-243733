@@ -25,12 +25,12 @@
    Elegí 5 minutos porque la consulta de vacunación pendiente tarda entre 100 y 300ms y en una clínica pequeña se consulta varias veces por hora pero cambia poco. Si el TTL fuera muy bajo (5 segundos), el caché no serviría de nada porque se invalida solo antes de que alguien lo use. Si fuera muy alto (1 hora), un veterinario podría ver datos desactualizados justo después de vacunar a una mascota — por eso también invalido el caché manualmente cuando se aplica una vacuna.
 
 5. **Línea exacta de defensa contra SQL injection:**
-   La defensa está en `api/index.js` en las líneas 58 y 60:
+   La defensa está en `api/index.js` en las líneas 68 y 70:
    ```javascript
    const query = 'SELECT * FROM mascotas WHERE nombre ILIKE $1';
    const result = await queryWithRLS(req, query, [`%${nombre || ''}%`]);
    ```
-   Ambas líneas trabajan juntas. La línea 58 define la consulta SQL con un placeholder `$1`. La línea 60 envía el valor separado de la consulta al driver `pg`. Así, aunque alguien escriba `' OR '1'='1`, el driver lo trata como un literal y no como código SQL.
+   Ambas líneas trabajan juntas. La línea 68 define la consulta SQL con un placeholder `$1`. La línea 70 envía el valor separado de la consulta al driver `pg`. Así, aunque alguien escriba `' OR '1'='1`, el driver lo trata como un literal y no como código SQL.
 
    **Nota sobre Vistas:** La vista `v_mascotas_vacunacion_pendiente` utiliza `security_invoker = true`. Esto garantiza que cuando un veterinario o recepcionista consulte la vista, PostgreSQL aplique las políticas RLS y los permisos del rol invocador y no del creador de la vista.
 
@@ -43,4 +43,5 @@ Para levantar el sistema completo ejecuta el siguiente comando en la raíz del p
 ```bash
 docker-compose up --build
 ```
-Luego, abre el archivo `frontend/index.html` en tu navegador.
+Luego, entra a la siguiente dirección en tu navegador para ver la interfaz gráfica:
+👉 **http://localhost:8080**

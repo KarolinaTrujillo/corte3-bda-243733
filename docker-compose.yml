@@ -6,7 +6,7 @@ services:
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - "${DB_PORT_EXT:-5432}:5432"
     volumes:
       - ./schema_corte3.sql:/docker-entrypoint-initdb.d/01_schema.sql
       - ./backend/01_procedures.sql:/docker-entrypoint-initdb.d/02_procedures.sql
@@ -48,6 +48,7 @@ services:
       DEFAULT_ROLE: ${DEFAULT_ROLE:-rol_recepcion}
       VALID_ROLES: ${VALID_ROLES:-rol_veterinario,rol_recepcion,rol_administrador}
       VACCINE_COST: ${VACCINE_COST:-500.00}
+      FRONTEND_PORT: ${FRONTEND_PORT:-8080}
     depends_on:
       postgres:
         condition: service_healthy

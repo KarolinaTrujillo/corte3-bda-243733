@@ -16,9 +16,7 @@
         .cache-miss { background-color: #f8d7da; color: #721c24; }
     </style>
     <script>
-        // Configuración de la API desde variables globales o por defecto
-        // Puede ser sobrescrito por variables de entorno en Docker/variables globales
-        window.API_URL = window.API_URL || 'http://localhost:3000/api';
+        window.API_URL = window.API_URL || `${window.location.protocol}//${window.location.hostname}:3000/api`;
     </script>
 </head>
 <body>
@@ -30,7 +28,7 @@
     <section id="pantalla-login">
         <h2>Selección de Rol</h2>
         <select id="roleSelect">
-            <!-- Veterinarios se cargan dinámicamente desde el backend -->
+
             <option value="rol_recepcion,null">Recepción</option>
             <option value="rol_administrador,null">Administrador</option>
         </select>

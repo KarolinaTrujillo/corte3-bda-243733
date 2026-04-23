@@ -1,5 +1,4 @@
-// Usar API_URL de data attribute o variable global (puede venir de environment)
-const API_URL = window.API_URL || document.documentElement.dataset.apiUrl || 'http://localhost:3000/api';
+const API_URL = window.API_URL || document.documentElement.dataset.apiUrl || `${window.location.protocol}//${window.location.hostname}:3000/api`;
 const VACCINE_COST = window.VACCINE_COST || parseFloat(localStorage.getItem('VACCINE_COST') || '500.00');
 
 let currentSession = {
@@ -7,7 +6,7 @@ let currentSession = {
     vetId: null
 };
 
-// Cargar lista de veterinarios al iniciar
+
 async function cargarVeterinarios() {
     try {
         const response = await fetch(`${API_URL}/veterinarios`);
@@ -18,11 +17,11 @@ async function cargarVeterinarios() {
         const veterinarios = await response.json();
         const select = document.getElementById('roleSelect');
         
-        // Limpiar opciones previas de veterinarios
+
         const existingVetOptions = Array.from(select.options).filter(opt => opt.value.startsWith('rol_veterinario'));
         existingVetOptions.forEach(opt => opt.remove());
         
-        // Agregar veterinarios dinámicamente
+
         veterinarios.forEach(vet => {
             const option = document.createElement('option');
             option.value = `rol_veterinario,${vet.id}`;
@@ -34,7 +33,7 @@ async function cargarVeterinarios() {
     }
 }
 
-// Cargar veterinarios cuando el DOM esté listo
+
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', cargarVeterinarios);
 } else {

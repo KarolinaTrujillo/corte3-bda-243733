@@ -12,7 +12,7 @@
   *(La interfaz muestra una tabla vacía, sin errores internos de BD expuestos)*
   
   ![Screenshot Ataque 1 - Quote-escape clásico](./screenshot_ataque_1.png)
-- **Líneas que defendieron:** `api/index.js` líneas 58 y 60. La línea 58 define la consulta con `$1` y la línea 60 envía el valor separado (`await queryWithRLS(req, query, [`%${nombre || ''}%`]);`).
+- **Líneas que defendieron:** `api/index.js` líneas 68 y 70. La línea 68 define la consulta con `$1` y la línea 70 envía el valor separado (`await queryWithRLS(req, query, [`%${nombre || ''}%`]);`).
 
 ### Ataque 2: Stacked query
 - **Input probado:** `'; DROP TABLE mascotas; --`
@@ -24,7 +24,7 @@
   *(Ninguna tabla fue borrada)*
   
   ![Screenshot Ataque 2 - Stacked query](./screenshot_ataque_2.png)
-- **Líneas que defendieron:** `api/index.js` líneas 58 y 60. La parametrización impide que el `;` inicie un nuevo comando.
+- **Líneas que defendieron:** `api/index.js` líneas 68 y 70. La parametrización impide que el `;` inicie un nuevo comando.
 
 ### Ataque 3: Union-based
 - **Input probado:** `' UNION SELECT id, cedula, nombre, NULL FROM veterinarios --`
@@ -36,7 +36,7 @@
   *(La consulta no ejecuta el UNION)*
   
   ![Screenshot Ataque 3 - Union-based](./screenshot_ataque_3.png)
-- **Líneas que defendieron:** `api/index.js` líneas 58 y 60. El UNION es tratado como texto dentro del LIKE.
+- **Líneas que defendieron:** `api/index.js` líneas 68 y 70. El UNION es tratado como texto dentro del LIKE.
 
 ## Sección 2: RLS en acción
 
